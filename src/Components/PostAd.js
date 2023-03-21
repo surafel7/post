@@ -1,5 +1,7 @@
 import React, { useState, useReducer } from "react";
-
+import "./PostAd.css";
+import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
 import {
   Autocomplete,
   Box,
@@ -12,7 +14,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 
 function PostAd() {
   const categories = ["Property", "Vehicles", "Stocks"];
@@ -50,7 +51,6 @@ function PostAd() {
       "Watercraft & Boats",
     ],
   };
-  // console.log(location);
 
   const [nextPage, setNextpage] = useState(false);
   const [Property, setproperty] = useState(false);
@@ -63,6 +63,15 @@ function PostAd() {
   const [weight, setWeight] = useState("");
   const [image, setImage] = useState([]);
   const nexthandler = selectCat !== "" && location !== "" && image != "";
+
+  const selectImage = (e) => {
+    const selectedImage = e.target.files;
+    const selectedImageArray = Array.from(selectedImage);
+    const imageArray = selectedImageArray.map((file) => {
+      return URL.createObjectURL(file);
+    });
+    setImage(imageArray);
+  };
 
   const Nextpage = () => {
     setNextpage(!nextPage);
@@ -159,7 +168,6 @@ function PostAd() {
         </Typography>
 
         <Button
-          onChange={(e) => setImage(e.target.files)}
           sx={{
             backgroundColor: "#6C8EA0",
             height: "85px",
@@ -167,6 +175,9 @@ function PostAd() {
             borderRadius: "50px",
             marginTop: "22px",
             marginBottom: "15px",
+            md: {},
+            xs: {},
+            sm: {},
           }}
           variant="contained"
           component="label"
@@ -176,8 +187,35 @@ function PostAd() {
               fontSize: "50px",
             }}
           />
-          <input type="file" accept="image/jpeg, image/png" hidden />
+          <input
+            onChange={selectImage}
+            type="file"
+            accept="image/jpeg, image/png"
+            hidden
+            multiple
+          />
         </Button>
+        <Box
+          sx={{
+            display: "flex",
+            overflow: "auto",
+            paddingRight: "10px",
+          }}
+        >
+          {image.map((img, index) => {
+            return (
+              <div className="hoverImage" key={img}>
+                <img width="83px" height="83px" src={img} alt="images" />
+                <Button
+                  className="delete"
+                  onClick={() => setImage(image.filter((e) => e !== img))}
+                >
+                  <ClearIcon size="small" />
+                </Button>
+              </div>
+            );
+          })}
+        </Box>
         <Typography variant="subtitle2">
           Each picture must not exceed 5 Mb
         </Typography>
